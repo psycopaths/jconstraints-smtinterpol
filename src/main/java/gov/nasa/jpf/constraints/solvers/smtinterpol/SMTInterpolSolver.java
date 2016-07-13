@@ -25,6 +25,7 @@ import gov.nasa.jpf.constraints.api.InterpolationSolver;
 import gov.nasa.jpf.constraints.api.Valuation;
 import gov.nasa.jpf.constraints.api.Variable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,7 +47,7 @@ public class SMTInterpolSolver extends ConstraintSolver implements Interpolation
         org.apache.log4j.Logger smtLogger = 
                 org.apache.log4j.Logger.getLogger(SMTInterpolSolver.class.getName());
         
-        smtLogger.setLevel(Level.WARN);
+        //System.out.println(Arrays.toString(exprsn.toArray()));
         
         Script s = new de.uni_freiburg.informatik.ultimate.
                 smtinterpol.smtlib2.SMTInterpol(smtLogger);
@@ -55,7 +56,7 @@ public class SMTInterpolSolver extends ConstraintSolver implements Interpolation
                 new SMTInterpolExpressionGenerator(s);
         ArrayList<String> names = new ArrayList<>();
 
-        s.setOption(":produce-proofs", true);
+        s.setOption(":produce-interpolants", true);
         s.setLogic(Logics.QF_LIA);
         int i = 1;
         for (Expression<Boolean> e : exprsn) {            

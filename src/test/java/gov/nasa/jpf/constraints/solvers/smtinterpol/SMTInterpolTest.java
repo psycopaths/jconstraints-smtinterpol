@@ -48,7 +48,7 @@ public class SMTInterpolTest {
         System.out.println("--- test 1");
         try {
             Script s = new SMTInterpol(Logger.getRootLogger(), true);
-            s.setOption(":produce-proofs", true);
+            s.setOption(":produce-interpolants", true);
             s.setLogic(Logics.QF_LIA);
             s.declareFun("x", new Sort[0], s.sort("Int"));
             s.declareFun("y", new Sort[0], s.sort("Int"));
@@ -170,7 +170,7 @@ public class SMTInterpolTest {
         Variable x1 = new Variable(BuiltinTypes.BOOL , "x1");
         Variable x2 = new Variable(BuiltinTypes.BOOL , "x2");
         
-        Expression<Boolean> phi_2 =new PropositionalCompound(x1, LogicalOperator.EQUIV, x2);
+        Expression<Boolean> phi_2 =new PropositionalCompound(x1, LogicalOperator.AND, x2);
         terms.add(phi_2);
         terms.add(ExpressionUtil.FALSE);
         
