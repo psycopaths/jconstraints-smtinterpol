@@ -19,13 +19,11 @@ import de.uni_freiburg.informatik.ultimate.logic.Term;
 import gov.nasa.jpf.constraints.api.Expression;
 import gov.nasa.jpf.constraints.api.Variable;
 import gov.nasa.jpf.constraints.expressions.Constant;
-import gov.nasa.jpf.constraints.expressions.LogicalOperator;
 import gov.nasa.jpf.constraints.expressions.Negation;
 import gov.nasa.jpf.constraints.expressions.NumericBooleanExpression;
 import gov.nasa.jpf.constraints.expressions.NumericComparator;
 import gov.nasa.jpf.constraints.expressions.NumericCompound;
 import gov.nasa.jpf.constraints.expressions.NumericOperator;
-import gov.nasa.jpf.constraints.expressions.PropositionalCompound;
 import gov.nasa.jpf.constraints.expressions.UnaryMinus;
 import gov.nasa.jpf.constraints.types.BuiltinTypes;
 import gov.nasa.jpf.constraints.util.ExpressionUtil;
@@ -33,7 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 public class TermParser {
 
@@ -45,7 +42,6 @@ public class TermParser {
 
     public TermParser(Term t, Set<Variable<?>> vars) {
         this.input = t.toString().trim();
-        //System.out.println(this.input);
         for (Variable v : vars) {
             this.vars.put(v.getName(), v);
         }
@@ -53,7 +49,8 @@ public class TermParser {
 
     public Expression parse() {
         parseLet();
-        return parseTerm();
+        Expression result = parseTerm();
+        return result;
     }
 
     private Expression parseTerm() {
@@ -78,7 +75,6 @@ public class TermParser {
             }
             //return new Variable(BuiltinTypes.SINT32, token);
             Variable var = this.vars.get(token);
-            //System.out.println(ExpressionUtil.toParseableString(var));
             assert var != null;
             return var;
         }
@@ -89,10 +85,9 @@ public class TermParser {
         String op = nextToken();
         ArrayList<Expression> sub = new ArrayList<>();
         while (hasNextTerm()) {
-            sub.add(parseTerm());
+          sub.add(parseTerm());
         }
         removeParen();
-
         switch (op) {
             case "=":
                 return new NumericBooleanExpression(
@@ -160,7 +155,7 @@ public class TermParser {
     }
 
     private void parseLet() {
-        while (hasMoreLet()) {
+      while (hasMoreLet()) {
             getFirstLet();
         }
     }
@@ -171,6 +166,12 @@ public class TermParser {
         trim();
         removeParen();
         trim();
+        if(hasMoreLet()){
+          parseLet();
+          trim();
+          removeParen();
+          trim();
+        }
         while (hasNextTerm()) {
             removeParen();
             String name = nextToken().trim();
@@ -190,7 +191,44 @@ public class TermParser {
         int idx = this.input.indexOf("(let");
         String prefix = this.input.substring(0, idx);
         this.input = this.input.substring(idx);
+        String postfix = preparePostfix();
         parseOneLet();
-        this.input = prefix + this.input;
+        this.input = prefix + this.input + postfix;
+    }
+
+    private String preparePostfix(){
+        int endIdx = getEndOfLetTerm(this.input, 5,0)+1;
+        String postfix = this.input.substring(endIdx);
+        postfix = postfix.trim();
+        this.input = this.input.substring(0,endIdx);
+        //In case this was not the last let in the term, we need to remove the closing bracket.
+        endIdx = getEndOfLetTerm(postfix, 0,-1);
+        postfix = postfix.substring(0,endIdx) + postfix.substring(endIdx+1);
+        return postfix;
+    }
+    private int getEndOfLetTerm(String analysisPart, int start, int breakCondition){
+        int open = 0;
+        int closed = 0;
+        char[] inputs = analysisPart.toCharArray();
+        //index 5 is the first opening break after (let 
+        for(int index = start ; index < inputs.length; index++){
+          char c = inputs[index];
+          if(c == '('){
+            ++open;
+          }
+          if(c == ')'){
+            ++closed;
+          }
+          if(open-closed == breakCondition){
+            return index;
+          }
+        }
+        System.err.println("Cannot fin the end of the let term");
+        System.exit(42);
+        return -1;
+    }
+
+    private boolean isLetTerm() {
+      return this.input.startsWith("(Let");
     }
 }
