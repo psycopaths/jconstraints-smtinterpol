@@ -206,6 +206,7 @@ public class TermParser {
         postfix = postfix.substring(0,endIdx) + postfix.substring(endIdx+1);
         return postfix;
     }
+
     private int getEndOfLetTerm(String analysisPart, int start, int breakCondition){
         int open = 0;
         int closed = 0;
@@ -226,9 +227,5 @@ public class TermParser {
         System.err.println("Cannot fin the end of the let term");
         System.exit(42);
         return -1;
-    }
-
-    private boolean isLetTerm() {
-      return this.input.startsWith("(Let");
     }
 }
