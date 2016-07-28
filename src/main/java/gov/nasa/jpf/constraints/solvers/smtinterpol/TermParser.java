@@ -25,6 +25,7 @@ import gov.nasa.jpf.constraints.expressions.NumericComparator;
 import gov.nasa.jpf.constraints.expressions.NumericCompound;
 import gov.nasa.jpf.constraints.expressions.NumericOperator;
 import gov.nasa.jpf.constraints.expressions.UnaryMinus;
+import gov.nasa.jpf.constraints.solvers.smtinterpol.exception.TermParserException;
 import gov.nasa.jpf.constraints.types.BuiltinTypes;
 import gov.nasa.jpf.constraints.util.ExpressionUtil;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class TermParser {
         }
     }
 
-    public Expression parse() {
+    public Expression parse() throws TermParserException {
         parseLet();
         Expression result = parseTerm();
         return result;
@@ -154,13 +155,13 @@ public class TermParser {
         input = input.trim();
     }
 
-    private void parseLet() {
+    private void parseLet() throws TermParserException {
       while (hasMoreLet()) {
-            getFirstLet();
-        }
+        getFirstLet();
+      }
     }
 
-    private void parseOneLet() {
+    private void parseOneLet() throws TermParserException {
         trim();
         this.input = this.input.replaceFirst("\\(let", "");
         trim();
@@ -187,7 +188,7 @@ public class TermParser {
         return this.input.contains("(let");
     }
 
-    private void getFirstLet() {
+    private void getFirstLet() throws TermParserException {
         int idx = this.input.indexOf("(let");
         String prefix = this.input.substring(0, idx);
         this.input = this.input.substring(idx);
@@ -196,18 +197,20 @@ public class TermParser {
         this.input = prefix + this.input + postfix;
     }
 
-    private String preparePostfix(){
+    private String preparePostfix() throws TermParserException{
         int endIdx = getEndOfLetTerm(this.input, 5,0)+1;
         String postfix = this.input.substring(endIdx);
         postfix = postfix.trim();
         this.input = this.input.substring(0,endIdx);
-        //In case this was not the last let in the term, we need to remove the closing bracket.
+        //In case this was not the last let in the term,
+        //we need to remove the closing bracket.
         endIdx = getEndOfLetTerm(postfix, 0,-1);
         postfix = postfix.substring(0,endIdx) + postfix.substring(endIdx+1);
         return postfix;
     }
 
-    private int getEndOfLetTerm(String analysisPart, int start, int breakCondition){
+    private int getEndOfLetTerm(String analysisPart, 
+            int start, int breakCondition) throws TermParserException{
         int open = 0;
         int closed = 0;
         char[] inputs = analysisPart.toCharArray();
@@ -224,8 +227,6 @@ public class TermParser {
             return index;
           }
         }
-        System.err.println("Cannot fin the end of the let term");
-        System.exit(42);
-        return -1;
+        throw new TermParserException("Cannot find the end of the let term");
     }
 }
