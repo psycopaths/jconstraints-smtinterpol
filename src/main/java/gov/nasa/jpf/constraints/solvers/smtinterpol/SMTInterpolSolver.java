@@ -24,6 +24,7 @@ import gov.nasa.jpf.constraints.api.Expression;
 import gov.nasa.jpf.constraints.api.InterpolationSolver;
 import gov.nasa.jpf.constraints.api.Valuation;
 import gov.nasa.jpf.constraints.api.Variable;
+import gov.nasa.jpf.constraints.solvers.smtinterpol.exception.TermParserException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -84,7 +85,14 @@ public class SMTInterpolSolver extends ConstraintSolver implements Interpolation
             for (Term t : interpolants) {
                 //System.out.println(t);
                 TermParser parser = new TermParser(t, gen.getVariables());
-                Expression<Boolean> interpolant = parser.parse();
+                Expression<Boolean> interpolant;
+              try {
+                interpolant = parser.parse();
+              } catch (TermParserException ex) {
+                Logger.getLogger(SMTInterpolSolver.class.getName())
+                        .log(java.util.logging.Level.SEVERE, null, ex);
+                return null;
+              }
                 ret.add(interpolant);
             }
             
