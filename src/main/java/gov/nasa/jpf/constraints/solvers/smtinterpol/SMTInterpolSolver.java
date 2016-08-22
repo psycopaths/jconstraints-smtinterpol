@@ -40,13 +40,10 @@ public class SMTInterpolSolver extends ConstraintSolver implements Interpolation
     @Override
     public List<Expression<Boolean>> getInterpolants(List<Expression<Boolean>> exprsn) {
         
-        org.apache.log4j.Logger smtLogger = 
-                org.apache.log4j.Logger.getLogger(SMTInterpolSolver.class.getName());
-        
         //System.out.println(Arrays.toString(exprsn.toArray()));
         
         Script s = new de.uni_freiburg.informatik.ultimate.
-                smtinterpol.smtlib2.SMTInterpol(smtLogger);
+                smtinterpol.smtlib2.SMTInterpol(logger);
         
         SMTInterpolExpressionGenerator gen = 
                 new SMTInterpolExpressionGenerator(s);
