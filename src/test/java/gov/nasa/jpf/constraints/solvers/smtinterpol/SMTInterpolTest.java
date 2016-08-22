@@ -38,7 +38,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
 
 public class SMTInterpolTest {
@@ -47,7 +46,11 @@ public class SMTInterpolTest {
     public void test1() {
         System.out.println("--- test 1");
         try {
-            Script s = new SMTInterpol(Logger.getRootLogger(), true);
+            de.uni_freiburg.informatik.ultimate.smtinterpol.
+                    DefaultLogger smtLogger = 
+                        new de.uni_freiburg.informatik.ultimate.smtinterpol
+                          .DefaultLogger();
+            Script s = new SMTInterpol(smtLogger, true);
             s.setOption(":produce-interpolants", true);
             s.setLogic(Logics.QF_LIA);
             s.declareFun("x", new Sort[0], s.sort("Int"));

@@ -65,7 +65,6 @@
       <artifactId>smtinterpol</artifactId>
       <version>${interpol.version}</version>
     </dependency>                  
-
     </dependencies>
 
 </project>

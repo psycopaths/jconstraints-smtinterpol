@@ -19,19 +19,15 @@ import de.uni_freiburg.informatik.ultimate.logic.Annotation;
 import de.uni_freiburg.informatik.ultimate.logic.Logics;
 import de.uni_freiburg.informatik.ultimate.logic.Script;
 import de.uni_freiburg.informatik.ultimate.logic.Term;
+import de.uni_freiburg.informatik.ultimate.smtinterpol.DefaultLogger;
 import gov.nasa.jpf.constraints.api.ConstraintSolver;
 import gov.nasa.jpf.constraints.api.Expression;
 import gov.nasa.jpf.constraints.api.InterpolationSolver;
 import gov.nasa.jpf.constraints.api.Valuation;
-import gov.nasa.jpf.constraints.api.Variable;
 import gov.nasa.jpf.constraints.solvers.smtinterpol.exception.TermParserException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
-import org.apache.log4j.Level;
 
 public class SMTInterpolSolver extends ConstraintSolver implements InterpolationSolver {
 
@@ -45,9 +41,8 @@ public class SMTInterpolSolver extends ConstraintSolver implements Interpolation
     @Override
     public List<Expression<Boolean>> getInterpolants(List<Expression<Boolean>> exprsn) {
         
-        org.apache.log4j.Logger smtLogger = 
-                org.apache.log4j.Logger.getLogger(SMTInterpolSolver.class.getName());
-        
+        de.uni_freiburg.informatik.ultimate.smtinterpol.DefaultLogger smtLogger = 
+                new de.uni_freiburg.informatik.ultimate.smtinterpol.DefaultLogger();
         //System.out.println(Arrays.toString(exprsn.toArray()));
         
         Script s = new de.uni_freiburg.informatik.ultimate.
@@ -89,8 +84,7 @@ public class SMTInterpolSolver extends ConstraintSolver implements Interpolation
               try {
                 interpolant = parser.parse();
               } catch (TermParserException ex) {
-                Logger.getLogger(SMTInterpolSolver.class.getName())
-                        .log(java.util.logging.Level.SEVERE, null, ex);
+                logger.severe(ex.getMessage());
                 return null;
               }
                 ret.add(interpolant);
