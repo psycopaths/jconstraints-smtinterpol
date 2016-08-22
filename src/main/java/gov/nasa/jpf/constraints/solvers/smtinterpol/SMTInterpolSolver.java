@@ -23,15 +23,10 @@ import gov.nasa.jpf.constraints.api.ConstraintSolver;
 import gov.nasa.jpf.constraints.api.Expression;
 import gov.nasa.jpf.constraints.api.InterpolationSolver;
 import gov.nasa.jpf.constraints.api.Valuation;
-import gov.nasa.jpf.constraints.api.Variable;
 import gov.nasa.jpf.constraints.solvers.smtinterpol.exception.TermParserException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
-import org.apache.log4j.Level;
 
 public class SMTInterpolSolver extends ConstraintSolver implements InterpolationSolver {
 
@@ -89,8 +84,7 @@ public class SMTInterpolSolver extends ConstraintSolver implements Interpolation
               try {
                 interpolant = parser.parse();
               } catch (TermParserException ex) {
-                Logger.getLogger(SMTInterpolSolver.class.getName())
-                        .log(java.util.logging.Level.SEVERE, null, ex);
+                logger.severe(ex.getMessage());
                 return null;
               }
                 ret.add(interpolant);
