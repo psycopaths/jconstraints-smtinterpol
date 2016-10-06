@@ -19,7 +19,6 @@ import de.uni_freiburg.informatik.ultimate.logic.Annotation;
 import de.uni_freiburg.informatik.ultimate.logic.Logics;
 import de.uni_freiburg.informatik.ultimate.logic.Script;
 import de.uni_freiburg.informatik.ultimate.logic.Term;
-import de.uni_freiburg.informatik.ultimate.smtinterpol.DefaultLogger;
 import gov.nasa.jpf.constraints.api.ConstraintSolver;
 import gov.nasa.jpf.constraints.api.Expression;
 import gov.nasa.jpf.constraints.api.InterpolationSolver;
@@ -41,12 +40,8 @@ public class SMTInterpolSolver extends ConstraintSolver implements Interpolation
     @Override
     public List<Expression<Boolean>> getInterpolants(List<Expression<Boolean>> exprsn) {
         
-        de.uni_freiburg.informatik.ultimate.smtinterpol.DefaultLogger smtLogger = 
-                new de.uni_freiburg.informatik.ultimate.smtinterpol.DefaultLogger();
-        //System.out.println(Arrays.toString(exprsn.toArray()));
-        
         Script s = new de.uni_freiburg.informatik.ultimate.
-                smtinterpol.smtlib2.SMTInterpol(smtLogger);
+                smtinterpol.smtlib2.SMTInterpol();
         
         SMTInterpolExpressionGenerator gen = 
                 new SMTInterpolExpressionGenerator(s);
