@@ -27,7 +27,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler-plugin.version>3.1</compiler-plugin.version>
-        <interpol.version>2.1</interpol.version>
+        <interpol.version>2.5</interpol.version>
         <testng.version>6.8</testng.version>
         <jconstraints.version>0.9.2-SNAPSHOT</jconstraints.version>		
     </properties>
