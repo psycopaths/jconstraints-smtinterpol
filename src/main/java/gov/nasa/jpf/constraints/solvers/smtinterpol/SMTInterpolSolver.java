@@ -19,6 +19,7 @@ import de.uni_freiburg.informatik.ultimate.logic.Annotation;
 import de.uni_freiburg.informatik.ultimate.logic.Logics;
 import de.uni_freiburg.informatik.ultimate.logic.Script;
 import de.uni_freiburg.informatik.ultimate.logic.Term;
+import static de.uni_freiburg.informatik.ultimate.smtinterpol.LogProxy.LOGLEVEL_ERROR;
 import gov.nasa.jpf.constraints.api.ConstraintSolver;
 import gov.nasa.jpf.constraints.api.Expression;
 import gov.nasa.jpf.constraints.api.InterpolationSolver;
@@ -48,6 +49,8 @@ public class SMTInterpolSolver extends ConstraintSolver implements Interpolation
         ArrayList<String> names = new ArrayList<>();
 
         s.setOption(":produce-interpolants", true);
+        //This might be change, if you need internal output from smtinterpol for debugging.
+        s.setOption(":verbosity", LOGLEVEL_ERROR);
         s.setLogic(Logics.QF_LIA);
         int i = 1;
         for (Expression<Boolean> e : exprsn) {            

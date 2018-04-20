@@ -15,7 +15,6 @@
  */
 package gov.nasa.jpf.constraints.solvers.smtinterpol;
 
-import gov.nasa.jpf.constraints.solvers.smtinterpol.SMTInterpolSolver;
 import de.uni_freiburg.informatik.ultimate.logic.Annotation;
 import de.uni_freiburg.informatik.ultimate.logic.Logics;
 import de.uni_freiburg.informatik.ultimate.logic.SMTLIBException;
@@ -23,6 +22,7 @@ import de.uni_freiburg.informatik.ultimate.logic.Script;
 import de.uni_freiburg.informatik.ultimate.logic.Script.LBool;
 import de.uni_freiburg.informatik.ultimate.logic.Sort;
 import de.uni_freiburg.informatik.ultimate.logic.Term;
+import static de.uni_freiburg.informatik.ultimate.smtinterpol.LogProxy.LOGLEVEL_ERROR;
 import de.uni_freiburg.informatik.ultimate.smtinterpol.smtlib2.SMTInterpol;
 import gov.nasa.jpf.constraints.api.Expression;
 import gov.nasa.jpf.constraints.api.Variable;
@@ -36,7 +36,6 @@ import gov.nasa.jpf.constraints.util.ExpressionUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import junit.framework.TestCase;
 
 import org.testng.annotations.Test;
 
@@ -46,12 +45,9 @@ public class SMTInterpolTest {
     public void test1() {
         System.out.println("--- test 1");
         try {
-            de.uni_freiburg.informatik.ultimate.smtinterpol.
-                    DefaultLogger smtLogger = 
-                        new de.uni_freiburg.informatik.ultimate.smtinterpol
-                          .DefaultLogger();
-            Script s = new SMTInterpol(smtLogger, true);
+            Script s = new SMTInterpol();
             s.setOption(":produce-interpolants", true);
+            s.setOption(":verbosity", LOGLEVEL_ERROR);
             s.setLogic(Logics.QF_LIA);
             s.declareFun("x", new Sort[0], s.sort("Int"));
             s.declareFun("y", new Sort[0], s.sort("Int"));
